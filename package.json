@@ -1,0 +1,25 @@
+{
+  "name": "charset-encoder",
+  "version": "1.0.0",
+  "description": "Allows messages to be encoded and decoded using a provided charset. Randomized key/value pairs are used for encoding and can be exported/imported.",
+  "main": "src/charset-encoder.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [
+    "charset",
+    "encoder",
+    "decoder",
+    "random"
+  ],
+  "author": "jgarnett",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.20.12",
+    "@babel/node": "^7.20.7",
+    "@babel/preset-env": "^7.20.2",
+    "@jest/globals": "^29.4.2",
+    "babel-jest": "^29.4.2",
+    "jest": "^29.4.2"
+  }
+}
