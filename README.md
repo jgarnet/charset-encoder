@@ -69,7 +69,7 @@ console.log(encoded);
 
 const decoded = charsetEncoder.decode('bca');
 console.log(decoded);
-// output -> abc
+// output -> cab
 ```
 
 Mappings can be exported for later use:
