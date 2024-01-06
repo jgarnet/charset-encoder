@@ -86,6 +86,14 @@ export default class CharsetEncoder {
      * Generates random key:value pairs to be used for encoding & decoding messages.
      */
     generateMapping() {
+        // account for edge-case where final randomized pair always leads to self-reference
+        let successful = false;
+        do {
+            successful = this.populateMaps();
+        } while(!successful);
+    }
+
+    populateMaps() {
         this.encodeMap = new Map();
         this.decodeMap = new Map();
         // used to keep track of available potential key:value pairs as encode / decode Maps are populated
@@ -102,9 +110,13 @@ export default class CharsetEncoder {
             const key = unusedKeys[keyIndex];
             const valueIndex = this.getRandom(unusedValues.length);
             const value = unusedValues[valueIndex];
+            //console.log(`key: ${key}, value: ${value}`)
             // skip iteration if key === value (self-reference) or key/value is already in a pair (collision)
             const shouldSkipIteration = key === value || this.encodeMap.has(key) || this.decodeMap.has(value);
             if (shouldSkipIteration) {
+                if (key === value && unusedKeys.length === 1) {
+                    return false;
+                }
                 continue;
             }
             this.encodeMap.set(key, value);
@@ -113,6 +125,7 @@ export default class CharsetEncoder {
             unusedKeys.splice(keyIndex, 1);
             unusedValues.splice(valueIndex, 1);
         }
+        return true;
     }
 
     getRandom(max) {
