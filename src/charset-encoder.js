@@ -110,7 +110,6 @@ export default class CharsetEncoder {
             const key = unusedKeys[keyIndex];
             const valueIndex = this.getRandom(unusedValues.length);
             const value = unusedValues[valueIndex];
-            //console.log(`key: ${key}, value: ${value}`)
             // skip iteration if key === value (self-reference) or key/value is already in a pair (collision)
             const shouldSkipIteration = key === value || this.encodeMap.has(key) || this.decodeMap.has(value);
             if (shouldSkipIteration) {
