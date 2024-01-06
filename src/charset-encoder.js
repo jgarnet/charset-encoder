@@ -16,17 +16,17 @@ export default class CharsetEncoder {
         if (options.mapping) {
             this.importMapping(options.mapping);
         } else {
-            this.initializeMaps();
+            this.generateMapping();
         }
     }
 
     setCharset(charset) {
-        const chars = new Map();
+        const chars = new Set();
         for (const c of charset) {
             if (chars.has(c)) {
                 throw new Error('Charset cannot contain duplicate values');
             }
-            chars.set(c, true);
+            chars.add(c);
         }
         this.charset = charset;
     }
@@ -85,7 +85,7 @@ export default class CharsetEncoder {
      * Initializes internal encodeMap & decodeMap based on supplied charset.
      * Generates random key:value pairs to be used for encoding & decoding messages.
      */
-    initializeMaps() {
+    generateMapping() {
         this.encodeMap = new Map();
         this.decodeMap = new Map();
         // used to keep track of available potential key:value pairs as encode / decode Maps are populated
@@ -98,19 +98,20 @@ export default class CharsetEncoder {
         }
         // populate encodeMap & decodeMap based on possible random unique pairs
         while (this.encodeMap.size < this.charset.length) {
-            const key = unusedKeys[0];
-            const randomIndex = this.getRandom(unusedValues.length);
-            const value = unusedValues[randomIndex];
+            const keyIndex = this.getRandom(unusedKeys.length);
+            const key = unusedKeys[keyIndex];
+            const valueIndex = this.getRandom(unusedValues.length);
+            const value = unusedValues[valueIndex];
             // skip iteration if key === value (self-reference) or key/value is already in a pair (collision)
-            const shouldContinue = key === value || this.encodeMap.has(key) || this.decodeMap.has(value);
-            if (shouldContinue) {
+            const shouldSkipIteration = key === value || this.encodeMap.has(key) || this.decodeMap.has(value);
+            if (shouldSkipIteration) {
                 continue;
             }
             this.encodeMap.set(key, value);
             this.decodeMap.set(value, key);
             // remove key & value from unusedKeys & unusedValues since they have been paired together
-            unusedKeys.splice(0, 1);
-            unusedValues.splice(randomIndex, 1);
+            unusedKeys.splice(keyIndex, 1);
+            unusedValues.splice(valueIndex, 1);
         }
     }
 
